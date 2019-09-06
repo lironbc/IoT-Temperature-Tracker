@@ -1,0 +1,1 @@
+mongod --bind_ip=localhost:27017 --dbpath=../data --nojournal --rest "$@"

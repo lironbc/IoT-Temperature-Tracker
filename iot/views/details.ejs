@@ -1,0 +1,138 @@
+<% include partials/head.ejs %>
+<% include partials/header.ejs %>
+
+<script type="text/javascript" src="js/details.js"></script>
+
+<script>
+    if(document.getElementById("nav_home").classList.contains("active")){
+        document.getElementById("nav_home").classList.remove("active");
+    }
+    document.getElementById("nav_details").classList.add("active");
+</script>
+
+
+<a id='convert-times' onclick = 'convertTimes([<%= times %>])' hidden></a>
+
+<div class = "my ui three small grey statistics">
+        <div class = "statistic">
+            <div class = "value">
+               <%= Math.min(...temperature) %> - <%= Math.max(...temperature) %> &deg C
+            </div>
+            <div class = "label">
+                Temperature
+            </div>
+        </div>
+
+    
+        <div class = "statistic">
+            <div class = "value">
+                <%= Math.min(...humidity) %> - <%= Math.max(...humidity) %> %
+            </div>
+            <div class = "label">
+                Humidity
+            </div>
+        </div>
+ 
+    
+
+        <div class = "statistic">
+            <div class = "value">
+                   <%= Math.min(...brightness) %> - <%= Math.max(...brightness) %> /1023
+            </div>
+            <div class = "label">
+                Brightness
+            </div>
+        </div>
+    </div>
+        
+<div class='my ui segment'>
+    <div class='ui tabular menu'>
+        <a class='active item' id='first-chart' onclick='showLineChart(this, [<%= temperature %>])'>Temperature</a>
+        <a class='item' onclick='showLineChart(this, [<%= humidity %>])'>Humidity</a>
+        <a class='item' onclick='showLineChart(this, [<%= brightness %>])'>Brightness</a>
+    </div>
+    <!--This is the chart canvas-->
+
+    
+    <canvas id = 'canvas'></canvas>
+</div>
+
+<div class='my ui grid'>
+    <div class= 'my six wide column'>
+        <h3 class = 'bg-blue table label'>History</h3>
+        <div class= 'table wrapper'>
+            <table class='ui table'>
+                <thead>
+                    <th>Timestamp</th>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Brightness</th>
+                </thead>
+                
+                    <% data.forEach(function(reading, i) { %>
+                 <tr>
+                     <td class = 'date'></td>
+                     <td><%= reading.temperature %></td>
+                     <td><%= reading.humidity %></td>
+                     <td><%= reading.brightness %></td>
+                </tr>
+                <% }) %>
+            </table>
+        </div>
+    </div>   
+</div>
+
+<script>
+var labels = [];
+document.getElementById('convert-times').click();
+document.getElementById('first-chart').click();
+
+var tableRows = document.querySelectorAll('.date');
+tableRows.forEach( function(row, i){
+   row.innerHTML = labels[i]; 
+});
+
+function convertTimes(times){
+    for(var i = 0; i < times.length; i++){
+        var date = new Date(times[i]);
+        labels[i] = date.toLocaleString();
+    }
+}
+
+function showLineChart(elem, data){
+    
+    var oldCtx = document.querySelector('canvas');
+    var parent = oldCtx.parentNode;
+    parent.removeChild(oldCtx);
+    
+    var ctx = document.createElement('canvas');
+    ctx.height = 275;
+    
+    parent.appendChild(ctx);
+    
+    var items = elem.parentNode.children;
+    for(var i = 0; i < items.length; i++){
+        items[i].classList.remove('active');
+    }
+    elem.classList.add('active');
+    
+    var ctx = document.querySelector('canvas');
+    renderChart(ctx, data);
+}
+
+function renderChart(ctx, data){
+    var data = {
+        datasets: [{
+            data:data
+        }],
+        labels: labels
+    };
+
+    var myLineChart = new Chart(ctx, {
+    type: 'line',
+    data: data
+});
+}
+</script>
+
+<% include partials/foot.ejs %>
