@@ -1,7 +1,7 @@
 # Note
 
 All files in this repository are moved over from c9.io which has since closed. Because this web application relies on a Raspberry pi
-to get data, there is no way for me to demo this project. This repository is purely to demonstrate the code my team and I created. 
+to get data, there is no way for me to demo this project. I also no longer have access to the physical Raspberry pi so I cannot display the code that I had on the device. This repository is purely to demonstrate the code my team and I created. 
 
 # Screenshots
 <img
